@@ -118,7 +118,8 @@ def hog_feature(im):
     # select magnitudes for those orientations
     cond2 = temp_ori > 0
     temp_mag = np.where(cond2, grad_mag, 0)
-    orientation_histogram[:,:,i] = uniform_filter(temp_mag, size=(cx, cy))[cx/2::cx, cy/2::cy].T
+    #numpy 1.12 donot support indices with float number, so add int to convert to int.
+    orientation_histogram[:,:,i] = uniform_filter(temp_mag, size=(cx, cy))[int(cx/2)::int(cx), int(cy/2)::int(cy)].T
   
   return orientation_histogram.ravel()
 

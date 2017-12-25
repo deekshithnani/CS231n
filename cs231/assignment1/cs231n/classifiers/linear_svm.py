@@ -80,21 +80,27 @@ def svm_loss_vectorized(W, X, y, reg):
   #############################################################################
   scores = X.dot(W)
   num_train = X.shape[0]
+  #find the right scores
   scores_right = scores[np.arange(num_train),y]
+  #reshape it to (n,1)
   scores_right = np.reshape(scores_right, (num_train, -1))
+  #calculate the margin
   L = scores - scores_right + delta
   L = np.maximum(0,L)
+  # set the margin of right scores to 0
   L[np.arange(num_train),y] = 0
-  
+  # calculate the loss and add regulation
   loss = np.sum(L)/num_train
   loss+= 0.5*reg*np.sum(W*W)
-  
+  # calculate  dW (j=yi -xi  j!=yi xi)
+  # set a mask for all the margin>0
   L[L>0] =1.0
+  # for a xi sum all L>0 and set it to L[yi]
   j_sum = np.sum(L,axis =1)
   L[np.arange(num_train),y] = -j_sum
+  #calculate dW with only one vectorized line
   dW += np.dot(X.T,L)/num_train +reg*W
-  # compute the average of loss
-  
+
   
 
   
